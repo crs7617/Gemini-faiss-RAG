@@ -1,4 +1,5 @@
 # Penny App Backend
+The backend chatbot for the penny app using FAISS and FastAPI
 
 ## Table of Contents
 
