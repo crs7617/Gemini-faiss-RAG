@@ -1,14 +1,15 @@
 import logging
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, File, UploadFile
 from pydantic import BaseModel
 import google.generativeai as genai
 import uvicorn
-from typing import List, Dict, Optional
+from typing import List, Dict
 import os
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
+import fitz  # PyMuPDF
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -68,6 +69,13 @@ def get_relevant_context(query: str, top_k: int = TOP_K) -> str:
     relevant_points = [finance_info[i] for i in indices[0]]
     return " ".join(relevant_points)
 
+def extract_text_from_pdf(file: UploadFile) -> str:
+    document = fitz.open(stream=file.file.read(), filetype="pdf")
+    text = ""
+    for page in document:
+        text += page.get_text()
+    return text
+
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest) -> ChatResponse:
     try:
@@ -93,6 +101,22 @@ async def chat(request: ChatRequest) -> ChatResponse:
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/upload_pdf")
+async def upload_pdf(file: UploadFile):
+    try:
+        text = extract_text_from_pdf(file)
+        finance_info.append(text)
+        
+        # Update FAISS index with the new text
+        new_embeddings = sentence_model.encode([text])
+        index.add(new_embeddings.astype('float32'))
+        
+        return {"message": "PDF content added successfully."}
+
+    except Exception as e:
+        logger.error(f"An error occurred while processing the PDF: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
