@@ -1,7 +1,4 @@
 # Penny App Backend
-## Financial Education Chatbot with RAG System
-
-Penny is an intelligent chatbot backend designed to provide personalized financial education. It uses a Retrieval-Augmented Generation (RAG) system to offer accurate and context-aware responses to user queries about personal finance.
 
 ## Table of Contents
 
@@ -35,7 +32,7 @@ Penny is an intelligent chatbot backend designed to provide personalized financi
 ## Installation
 
 Clone the repository:
-```bash
+bash
 git clone https://github.com/yourusername/penny-app-backend.git
 cd penny-app-backend
 Create a virtual environment:
@@ -49,9 +46,9 @@ Install the required packages:
 bash
 Copy code
 pip install -r requirements.txt
-Set up your environment variables (see Environment Variables section).
+Set up your environment variables (see Environment Variables section).'''
 
-Usage
+## Usage
 Start the FastAPI server:
 
 bash
@@ -88,7 +85,7 @@ Copy code
 GEMINI_API_KEY=your_gemini_api_key_here
 Make sure to replace your_gemini_api_key_here with your actual Gemini API key.
 
-Contributing
+## Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 Fork the repository
